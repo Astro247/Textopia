@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="outerContainer">
+    <div class="container">
+        <h1>Profile</h1>
+        <h2 id="username">Username:</h2>
+        <h2 id="email">Email:</h2>
+        <form action="/logout" method="get">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+{% endblock content %}

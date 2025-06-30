@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="outerContainer">
+    <div class="container">
+        <h1 class="createPost">Post</h1>
+        <input id="postTitle" type="text" placeholder="Insert title..">
+        <textarea id="textContent" placeholder="Insert here.."></textarea>
+        <button id="submitPost">Submit</button>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/post.js') }}"></script>
+{% endblock content %}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
+    {% if page=="home" %}
+    <title>Textopia</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    {% endif %}
+    {% if page=="login" %}
+    <title>Textopia | Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    {% endif %}
+    {% if page=="register" %}
+    <title>Textopia | Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    {% endif %}
+    {% if page=="profile" %}
+    <title>Textopia | Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    {% endif %}
+    {% if page=="post" %}
+    <title>Textopia | Post</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/post.css') }}">
+    {% endif %}
+</head>
+
+<body>
+    <div class="outerNavbar">
+        <div class="innerNavbar">
+            <a href="/">Home</a>
+            <div class="image">
+                <img src="{{ url_for('static', filename='images/favicon.png') }}" alt="logo-icon">
+            </div>
+            {% if "user_email" in session %}
+            <div class="loggedDiv">
+                <a href="/post">Post</a>
+                <a href="/profile">Profile</a>
+            </div>
+            {% else %}
+            <a href="/login">Login</a>
+            {% endif %}
+        </div>
+    </div>
+    {% block content %}{% endblock content %}
+</body>
+
+</html>
