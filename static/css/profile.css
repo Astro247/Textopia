@@ -13,7 +13,8 @@
     flex-direction: column;
     align-items: start;
     gap: 1rem;
-    width: 20%;
+    width: 30%;
+    height: 40%;
     border: solid 3px black;
     padding: 5rem;
 }
@@ -41,4 +42,14 @@ button:visited {
 
 button:active {
     background-color: rgb(109, 109, 109);
+}
+
+@media (max-width: 1365px) {
+    .container {
+        width: 90%;
+    }
+
+    .post {
+        width: 100%;
+    }
 }
