@@ -6,9 +6,9 @@
         <div class="post">
             <div class="postHeader">
                 <h2>{{ post.title }}</h2>
-                <h3>By {{ post.username }} on {{ post.publishDate.strftime("%Y-%m-%d") }}</h3>
+                <h3>By {{ post.username }} on {{ post.publishdate.strftime("%Y-%m-%d") }}</h3>
             </div>
-            <textarea readonly>{{ post.postContent }}</textarea>
+            <textarea readonly>{{ post.postcontent }}</textarea>
         </div>
         {% endfor %}
     </div>

@@ -1,3 +1,6 @@
 __pycache__
 secretkey.py
 session_db.py
+Dockerfile
+fly.toml
+.github

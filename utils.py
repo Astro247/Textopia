@@ -1,17 +1,20 @@
-from db import getDatabaseConnection
+from session_db import getSessionConnection
 from werkzeug.security import generate_password_hash, check_password_hash
+import psycopg2.extras
 
 
 def registerUser(username, email, password):
-    connection = getDatabaseConnection()
+    connection = getSessionConnection()
     cursor = connection.cursor()
 
+    # Check if email already registered
     cursor.execute("SELECT email FROM users WHERE email = %s", (email,))
     if cursor.fetchone():
         cursor.close()
         connection.close()
         return {"success": False, "error": "Email already registered."}
 
+    # Check if username taken
     cursor.execute(
         "SELECT username FROM users WHERE username = %s", (username,))
     if cursor.fetchone():
@@ -21,6 +24,7 @@ def registerUser(username, email, password):
 
     hashed_password = generate_password_hash(password)
 
+    # Insert user
     cursor.execute(
         "INSERT INTO users (username, email, password) VALUES (%s, %s, %s)",
         (username, email, hashed_password)
@@ -29,16 +33,17 @@ def registerUser(username, email, password):
     connection.commit()
     cursor.close()
     connection.close()
-
     return {"success": True}
 
 
 def loginUser(email, password):
-    connection = getDatabaseConnection()
+    connection = getSessionConnection()
     cursor = connection.cursor()
 
     cursor.execute(
-        "SELECT username, password FROM users WHERE email = %s", (email,))
+        "SELECT username, password FROM users WHERE email = %s",
+        (email,)
+    )
     row = cursor.fetchone()
 
     if row:
@@ -58,29 +63,46 @@ def loginUser(email, password):
 
 
 def getProfileInfo(email):
-    connection = getDatabaseConnection()
+    connection = getSessionConnection()
     cursor = connection.cursor()
     cursor.execute(
-        "SELECT username, email FROM users WHERE email = %s", (email,))
+        "SELECT username, email FROM users WHERE email = %s",
+        (email,)
+    )
     row = cursor.fetchone()
     cursor.close()
     connection.close()
-    return {"username": row[0], "email": row[1]}
+    if row:
+        return {"username": row[0], "email": row[1]}
+    else:
+        return None
 
 
 def addPostToDatabase(email, title, content):
-    connection = getDatabaseConnection()
-    cursor = connection.cursor()
     if title == "" or content == "":
         return {"success": False}
+
+    connection = getSessionConnection()
+    cursor = connection.cursor()
+
     cursor.execute(
-        "SELECT username, email FROM users WHERE email = %s", (email,))
+        "SELECT username, email FROM users WHERE email = %s",
+        (email,)
+    )
     row = cursor.fetchone()
+    if not row:
+        cursor.close()
+        connection.close()
+        return {"success": False, "error": "User not found"}
+
     userUsername = row[0]
     userEmail = row[1]
-    postDatas = (userUsername, userEmail, title, content)
+
     cursor.execute(
-        "INSERT INTO posts (username, email, title, postContent) VALUES (%s, %s, %s, %s)", postDatas)
+        "INSERT INTO posts (username, email, title, postContent) VALUES (%s, %s, %s, %s)",
+        (userUsername, userEmail, title, content)
+    )
+
     connection.commit()
     cursor.close()
     connection.close()
@@ -88,12 +110,12 @@ def addPostToDatabase(email, title, content):
 
 
 def getAllPosts():
-    connection = getDatabaseConnection()
-    cursor = connection.cursor(dictionary=True)
+    connection = getSessionConnection()
+    cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cursor.execute("""
-        SELECT username, title, publishDate, postContent
+        SELECT username, title, publishdate, postContent
         FROM posts
-        ORDER BY publishDate DESC
+        ORDER BY publishdate DESC
     """)
     posts = cursor.fetchall()
     cursor.close()

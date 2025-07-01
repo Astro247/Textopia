@@ -25,7 +25,6 @@ def goToRegister():
 
 @app.route('/register', methods=['POST'])
 def addUserInfo():
-    createTables()
     datas = request.get_json()
     username = datas['username']
     email = datas['email']
@@ -79,9 +78,10 @@ def createPost():
     return jsonify(result)
 
 
-def createApp():
+def create_app():
+    createTables()
     return app
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
